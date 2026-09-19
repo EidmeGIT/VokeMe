@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Eidx Vocab</title>
+    <link rel="manifest" href="/manifest.json">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            height: 100%;
+            height: 100dvh;
+            overflow: hidden;
+            touch-action: manipulation;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #0b0f19;
+            color: #1e293b;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* App Container */
+        .app-card {
+            width: 100%;
+            max-width: 500px;
+            height: 100%;
+            height: 100dvh;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        @media (min-width: 640px) {
+            .app-card {
+                height: 96vh;
+                border-radius: 20px;
+                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+        }
+
+        /* Clean App Header */
+        .app-header {
+            background-color: #0f172a;
+            color: #ffffff;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #1e293b;
+            flex-shrink: 0;
+            z-index: 10;
+        }
+
+        .header-btn {
+            background: transparent;
+            border: none;
+            color: #f8fafc;
+            font-size: 18px;
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .header-btn:active {
+            background-color: #1e293b;
+            transform: scale(0.95);
+        }
+
+        .brand-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .brand-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #f8fafc;
+            line-height: 1.2;
+            letter-spacing: -0.2px;
+        }
+
+        /* Category Banner with Edit Capability */
+        .category-banner {
+            background-color: #510000;
+            padding: 14px 14px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+            gap: 8px;
+        }
+
+        .category-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 18px;
+            font-weight: 700;
+            color:#cec5ff;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .category-info i {
+            color: #cec5ff;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+
+        .category-title-text {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .btn-edit-active-title {
+            background: transparent;
+            border: none;
+            color: #64748b;
+            font-size: 13px;
+            padding: 4px;
+            cursor: pointer;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: color 0.15s, background-color 0.15s;
+        }
+
+        .btn-edit-active-title:hover {
+            color: #4f46e5;
+            background-color: #e0e7ff;
+        }
+
+        .category-count {
+            font-size: 13px;
+            background-color: #e2e8f0;
+            color: #475569;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        /* Table Column Headers (5-column layout: Row # | English | Bangla | Speaker | Delete) */
+        .table-header {
+            display: grid;
+            grid-template-columns: 24px 1fr 1fr 34px 28px;
+            gap: 6px;
+            padding: 8px 10px;
+            background-color: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 15px;
+            font-weight: 700;
+            color: black;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-align: center;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .header-left {
+            text-align: left;
+        }
+
+        /* Stretched Row List locked at top */
+        .vocab-list {
+            flex: 1;
+            min-height: 0;
+            padding: 6px 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; /* FIX 1: Lock contents to top */
+            gap: 0px;
+            overflow-y: auto;
+        }
+
+        .vocab-row {
+            display: grid;
+            grid-template-columns: 24px 1fr 1fr 34px 28px;
+            gap: 6px;
+            align-items: center;
+            padding: 2px 0;
+            border-bottom: 1px solid #f1f5f9;
+            height: 55px;
+            flex-shrink: 0;
+        }
+
+        .row-num {
+            text-align: center;
+            font-size: 20;
+            font-weight: 700;
+            color: black;
+        }
+
+        /* Input Containers */
+        .english-col {
+            display: flex;
+            align-items: center;
+            background-color: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 0 8px;
+            height: 50px;
+            width: 100%;
+        }
+
+        .english-col:focus-within {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
+        }
+
+        .english-input {
+            width: 100%;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 16px;
+            font-weight: 500;
+            color: #0f172a;
+            padding: 4px 0;
+        }
+
+        /* Bangla Container */
+        .bangla-col {
+            background-color: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 0 8px;
+            height: 50px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .bangla-text {
+            font-size: 16px;
+            font-weight: 600;
+            color: #0f172a;
+            word-break: break-word;
+            width: 100%;
+            transition: filter 0.2s, opacity 0.2s;
+        }
+
+        /* Masked Bangla text when Eye Hide Mode is ON */
+        .vocab-list.hide-meaning .bangla-text {
+            filter: blur(6px);
+            user-select: none;
+            opacity: 0.5;
+        }
+
+        .vocab-list.hide-meaning .bangla-text:hover {
+            filter: blur(0px);
+            opacity: 1;
+        }
+
+        .bangla-placeholder {
+            color: #94a3b8;
+            font-style: italic;
+            font-weight: 400;
+        }
+
+        /* Speaker Container on Right Side */
+        .speaker-box-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .speaker-box {
+            background-color: #e0e7ff;
+            color: #4f46e5;
+            border: none;
+            border-radius: 8px;
+            width: 45px;
+            height: 48px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            position: relative;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .speaker-box:active {
+            transform: scale(0.92);
+            background-color: #c7d2fe;
+        }
+
+        .speed-badge {
+            font-size: 8px;
+            font-weight: 800;
+            line-height: 1;
+            margin-top: 1px;
+            color: #3730a3;
+        }
+
+        .btn-delete {
+            background: transparent;
+            border: none;
+            color: #cbd5e1;
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 25px;
+            transition: color 0.15s, background-color 0.15s;
+        }
+
+        .btn-delete:hover {
+            color: #f43f5e;
+            background-color: #ffe4e6;
+        }
+
+        /* Empty State */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding: 30px 20px;
+            text-align: center;
+            color: #94a3b8;
+            margin: auto 0;
+        }
+
+        .empty-state i {
+            font-size: 40px;
+            margin-bottom: 12px;
+            color: #cbd5e1;
+        }
+
+        .empty-state p {
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .empty-state sub {
+            font-size: 11px;
+            color: #a1a1aa;
+        }
+
+        /* Elevated Footer Control Bar */
+        .bottom-control-bar {
+            background-color: #ffffff;
+            border-top: 1px solid #cbd5e1;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-shrink: 0;
+            box-shadow: 0 -6px 16px rgba(0, 0, 0, 0.05);
+            z-index: 5;
+        }
+
+        .pagination-box {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-page {
+            background-color: #f1f5f9;
+            color: #334155;
+            border: 1px solid #cbd5e1;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.15s;
+        }
+
+        .btn-page:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            border-color: #e2e8f0;
+        }
+
+        .page-status {
+            font-size: 12px;
+            font-weight: 700;
+            color: #475569;
+            min-width: 68px;
+            text-align: center;
+        }
+
+        .btn-add-bottom {
+            flex: 1;
+            background-color: #4f46e5;
+            color: #ffffff;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .btn-add-bottom:active {
+            transform: scale(0.98);
+            background-color: #4338ca;
+        }
+
+        /* Side Drawer Navigation */
+        .drawer-overlay {
+            position: absolute;
+            inset: 0;
+            background-color: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(2px);
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+
+        .drawer-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .drawer-content {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 82%;
+            max-width: 330px;
+            background-color: #0f172a;
+            color: #ffffff;
+            z-index: 101;
+            transform: translateX(-100%);
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 10px 0 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .drawer-overlay.active .drawer-content {
+            transform: translateX(0);
+        }
+
+        .drawer-header {
+            padding: 16px;
+            border-bottom: 1px solid #1e293b;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .drawer-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #f8fafc;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-close-drawer {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            font-size: 18px;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .category-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .category-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 12px;
+            border-radius: 10px;
+            background-color: #1e293b;
+            color: #cbd5e1;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.15s;
+        }
+
+        .category-item.active {
+            background-color: #4f46e5;
+            color: #ffffff;
+            border-color: #6366f1;
+            font-weight: 700;
+        }
+
+        .cat-item-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            overflow: hidden;
+            flex: 1;
+            margin-right: 8px;
+        }
+
+        .cat-item-name {
+            font-size: 13px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .cat-actions {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .cat-badge {
+            font-size: 10px;
+            background-color: rgba(255, 255, 255, 0.15);
+            padding: 2px 7px;
+            border-radius: 10px;
+            margin-right: 2px;
+        }
+
+        .btn-action-cat {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            font-size: 12px;
+            padding: 4px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: color 0.15s;
+        }
+
+        .btn-action-cat:hover {
+            color: #ffffff;
+        }
+
+        .btn-action-cat.del:hover {
+            color: #f43f5e;
+        }
+
+        .drawer-footer {
+            padding: 14px;
+            border-top: 1px solid #1e293b;
+        }
+
+        .btn-add-title {
+            width: 100%;
+            background-color: #10b981;
+            color: #ffffff;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        /* Modals */
+        .modal-overlay {
+            position: absolute;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-box {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 340px;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+
+        .modal-desc {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 16px;
+            line-height: 1.4;
+        }
+
+        .modal-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            margin-bottom: 16px;
+        }
+
+        .modal-input:focus {
+            border-color: #4f46e5;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .btn-modal-cancel {
+            background-color: #f1f5f9;
+            color: #475569;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-modal-submit {
+            background-color: #4f46e5;
+            color: #ffffff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-modal-danger {
+            background-color: #f43f5e;
+            color: #ffffff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .spinner {
+            border: 2px solid #e2e8f0;
+            border-top: 2px solid #4f46e5;
+            border-radius: 50%;
+            width: 12px;
+            height: 12px;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <main class="app-card">
+        
+        <!-- Header -->
+        <header class="app-header">
+            <button id="menu-btn" class="header-btn" type="button" title="Open categories menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="brand-box">
+                <h1 class="brand-title">Eidme Vocab</h1>
+            </div>
+            <button id="toggle-eye-btn" class="header-btn" type="button" title="Hide or show Bangla meaning">
+                <i id="eye-icon" class="fa-solid fa-eye"></i>
+            </button>
+        </header>
+
+        <!-- Current Category Banner -->
+        <div class="category-banner">
+            <div class="category-info">
+                <i class="fa-solid fa-folder-open"></i>
+                <span id="active-title-display" class="category-title-text">General Vocabulary</span>
+                <button id="edit-active-title-btn" class="btn-edit-active-title" type="button" title="Edit title name">
+                    <i class="fa-solid fa-pen-to-square" style="color:yellow;"></i>
+                </button>
+            </div>
+            <span id="active-count-display" class="category-count">0 words</span>
+        </div>
+
+        <!-- Table Column Headers -->
+        <div class="table-header">
+            <div>#</div>
+            <div class="header-left">English</div>
+            <div class="header-left">Bangla</div>
+            <div>Audio</div>
+            <div></div>
+        </div>
+
+        <!-- Scrollable & Stretched Vocab Rows Container -->
+        <div id="vocab-list" class="vocab-list"></div>
+
+        <!-- Bottom Control Bar -->
+        <div class="bottom-control-bar">
+            <div class="pagination-box">
+                <button id="prev-page-btn" class="btn-page" type="button" disabled title="Previous page">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                <span id="page-status" class="page-status">Page 1 / 1</span>
+                <button id="next-page-btn" class="btn-page" type="button" disabled title="Next page">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+
+            <button id="add-word-btn" class="btn-add-bottom" type="button">
+                <i class="fa-solid fa-plus"></i> Add Word
+            </button>
+        </div>
+
+        <!-- Drawer Overlay -->
+        <div id="drawer-overlay" class="drawer-overlay">
+            <div class="drawer-content">
+                <div class="drawer-header">
+                    <span class="drawer-title">
+                        <i class="fa-solid fa-layer-group"></i> Categories
+                    </span>
+                    <button id="close-drawer-btn" class="btn-close-drawer" type="button">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <div id="category-list" class="category-list"></div>
+                <div class="drawer-footer">
+                    <button id="add-title-btn" class="btn-add-title" type="button">
+                        <i class="fa-solid fa-folder-plus"></i> New Category Title
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Title Input / Edit Modal -->
+        <div id="title-modal" class="modal-overlay">
+            <div class="modal-box">
+                <h3 id="modal-heading" class="modal-title">Category Title</h3>
+                <input type="text" id="modal-title-input" class="modal-input" placeholder="e.g. Daily Phrases, IELTS 8..." maxlength="30" />
+                <div class="modal-actions">
+                    <button id="modal-cancel-btn" class="btn-modal-cancel" type="button">Cancel</button>
+                    <button id="modal-submit-btn" class="btn-modal-submit" type="button">Save</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Delete Confirmation UI Modal -->
+        <div id="delete-modal" class="modal-overlay">
+            <div class="modal-box">
+                <h3 class="modal-title">Delete Word</h3>
+                <p class="modal-desc">Are you sure you want to delete this word from your vocabulary list?</p>
+                <div class="modal-actions">
+                    <button id="delete-cancel-btn" class="btn-modal-cancel" type="button">Cancel</button>
+                    <button id="delete-confirm-btn" class="btn-modal-danger" type="button">Delete</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const LOCAL_STORAGE_KEY = 'eidx_vocab_app_v5';
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-vocab-app';
+        
+        const PAGE_SIZE = 12;
+
+        let appState = {
+            activeCategoryId: null,
+            categories: [],
+            currentPage: 1,
+            hideMeaning: false
+        };
+
+        let editingCategoryId = null;
+        let pendingDeleteWordId = null;
+        let pendingDeleteCategoryId = null;
+
+        let db = null;
+        let auth = null;
+        let currentUser = null;
+        let isFirestoreReady = false;
+        const debounceTimers = {};
+
+        // DOM Elements
+        const vocabList = document.getElementById('vocab-list');
+        const addWordBtn = document.getElementById('add-word-btn');
+        const activeTitleDisplay = document.getElementById('active-title-display');
+        const editActiveTitleBtn = document.getElementById('edit-active-title-btn');
+        const activeCountDisplay = document.getElementById('active-count-display');
+        const prevPageBtn = document.getElementById('prev-page-btn');
+        const nextPageBtn = document.getElementById('next-page-btn');
+        const pageStatus = document.getElementById('page-status');
+        const toggleEyeBtn = document.getElementById('toggle-eye-btn');
+        const eyeIcon = document.getElementById('eye-icon');
+        
+        const menuBtn = document.getElementById('menu-btn');
+        const drawerOverlay = document.getElementById('drawer-overlay');
+        const closeDrawerBtn = document.getElementById('close-drawer-btn');
+        const categoryList = document.getElementById('category-list');
+        const addTitleBtn = document.getElementById('add-title-btn');
+        
+        const titleModal = document.getElementById('title-modal');
+        const modalHeading = document.getElementById('modal-heading');
+        const modalTitleInput = document.getElementById('modal-title-input');
+        const modalCancelBtn = document.getElementById('modal-cancel-btn');
+        const modalSubmitBtn = document.getElementById('modal-submit-btn');
+
+        const deleteModal = document.getElementById('delete-modal');
+        const deleteCancelBtn = document.getElementById('delete-cancel-btn');
+        const deleteConfirmBtn = document.getElementById('delete-confirm-btn');
+
+        let selectedVoice = null;
+
+        // FIX 3: Natural & Crystal Clear English Voice Selector
+        function initTTSVoices() {
+            if (!('speechSynthesis' in window)) return;
+            
+            const updateVoiceList = () => {
+                const voices = window.speechSynthesis.getVoices();
+                if (!voices.length) return;
+
+                // Priority ranking for natural, highly clear, human-like female/natural voices
+                selectedVoice = 
+                    voices.find(v => v.lang.startsWith('en') && (
+                        v.name.includes('Google US English') || 
+                        v.name.includes('Samantha') || 
+                        v.name.includes('Karen') || 
+                        v.name.includes('Serena') || 
+                        v.name.includes('Natural') || 
+                        v.name.includes('Enhanced') ||
+                        v.name.includes('Online')
+                    )) ||
+                    voices.find(v => v.lang === 'en-US' || v.lang === 'en-GB') ||
+                    voices.find(v => v.lang.startsWith('en')) ||
+                    voices[0];
+            };
+
+            updateVoiceList();
+            if (speechSynthesis.onvoiceschanged !== undefined) {
+                speechSynthesis.onvoiceschanged = updateVoiceList;
+            }
+        }
+
+        function speakEnglishText(text, rate = 0.5) {
+            if (!text || !text.trim() || !('speechSynthesis' in window)) return;
+            window.speechSynthesis.cancel();
+
+            const utterance = new SpeechSynthesisUtterance(text.trim());
+            if (selectedVoice) {
+                utterance.voice = selectedVoice;
+                utterance.lang = selectedVoice.lang;
+            } else {
+                utterance.lang = 'en-US';
+            }
+            
+            // Speed 0.5x default, 0.1x slower mode
+            utterance.rate = rate;
+            utterance.pitch = 1.0; 
+            window.speechSynthesis.speak(utterance);
+        }
+
+        async function translateText(text) {
+            if (!text || !text.trim()) return '';
+            const cleanText = text.trim();
+
+            try {
+                const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=bn&dt=t&q=${encodeURIComponent(cleanText)}`;
+                const response = await fetch(url);
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data && data[0]) {
+                        return data[0].map(item => item[0]).join('');
+                    }
+                }
+            } catch (err) {
+                console.warn('Primary translate failed, attempting fallback...');
+            }
+
+            try {
+                const fallbackUrl = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(cleanText)}&langpair=en|bn`;
+                const response = await fetch(fallbackUrl);
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data && data.responseData) {
+                        return data.responseData.translatedText;
+                    }
+                }
+            } catch (err) {
+                console.error('Fallback translate failed:', err);
+            }
+
+            return 'অনুবাদ পাওয়া যায়নি';
+        }
+
+        function saveToLocalStorage() {
+            try {
+                localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(appState));
+            } catch (e) {
+                console.warn('LocalStorage save error:', e);
+            }
+        }
+
+        function loadFromLocalStorage() {
+            try {
+                // Compatibility check with older key
+                let stored = localStorage.getItem(LOCAL_STORAGE_KEY) || localStorage.getItem('vocab_native_app_v4');
+                if (stored) {
+                    const parsed = JSON.parse(stored);
+                    if (parsed && Array.isArray(parsed.categories)) {
+                        return parsed;
+                    }
+                }
+            } catch (e) {
+                console.warn('LocalStorage load error:', e);
+            }
+            return null;
+        }
+
+        async function syncToCloud() {
+            saveToLocalStorage();
+            if (!isFirestoreReady || !currentUser) return;
+            try {
+                const docRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'vocab_data', 'main');
+                await setDoc(docRef, {
+                    appState: appState,
+                    updatedAt: Date.now()
+                });
+            } catch (err) {
+                console.warn('Cloud sync error:', err);
+            }
+        }
+
+        function getActiveCategory() {
+            if (!appState.categories.length) return null;
+            let cat = appState.categories.find(c => c.id === appState.activeCategoryId);
+            if (!cat && appState.categories.length > 0) {
+                cat = appState.categories[0];
+                appState.activeCategoryId = cat.id;
+            }
+            return cat;
+        }
+
+        function openTitleModal(catId = null) {
+            editingCategoryId = catId;
+            if (catId) {
+                const cat = appState.categories.find(c => c.id === catId);
+                modalHeading.textContent = 'Edit Category Title';
+                modalTitleInput.value = cat ? cat.title : '';
+            } else {
+                modalHeading.textContent = 'Create Category Title';
+                modalTitleInput.value = '';
+            }
+            titleModal.classList.add('active');
+            modalTitleInput.focus();
+        }
+
+        function openDeleteModal(wordId, categoryId) {
+            pendingDeleteWordId = wordId;
+            pendingDeleteCategoryId = categoryId;
+            deleteModal.classList.add('active');
+        }
+
+        function closeDeleteModal() {
+            pendingDeleteWordId = null;
+            pendingDeleteCategoryId = null;
+            deleteModal.classList.remove('active');
+        }
+
+        function renderUI() {
+            const activeCategory = getActiveCategory();
+
+            if (appState.hideMeaning) {
+                vocabList.classList.add('hide-meaning');
+                eyeIcon.className = 'fa-solid fa-eye-slash';
+            } else {
+                vocabList.classList.remove('hide-meaning');
+                eyeIcon.className = 'fa-solid fa-eye';
+            }
+
+            if (!activeCategory) {
+                activeTitleDisplay.textContent = 'No Category Selected';
+                activeCountDisplay.textContent = '0 words';
+                vocabList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fa-solid fa-folder-open"></i>
+                        <p>No category title found</p>
+                        <sub>Tap "New Category Title" in the menu</sub>
+                    </div>
+                `;
+                pageStatus.textContent = 'Page 0 / 0';
+                prevPageBtn.disabled = true;
+                nextPageBtn.disabled = true;
+                return;
+            }
+
+            activeTitleDisplay.textContent = activeCategory.title;
+            const words = activeCategory.words || [];
+            activeCountDisplay.textContent = `${words.length} ${words.length === 1 ? 'word' : 'words'}`;
+
+            const totalPages = Math.max(1, Math.ceil(words.length / PAGE_SIZE));
+            if (appState.currentPage > totalPages) {
+                appState.currentPage = totalPages;
+            }
+
+            const startIndex = (appState.currentPage - 1) * PAGE_SIZE;
+            const pageWords = words.slice(startIndex, startIndex + PAGE_SIZE);
+
+            vocabList.innerHTML = '';
+
+            if (words.length === 0) {
+                vocabList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fa-solid fa-list-check"></i>
+                        <p>No words in "${activeCategory.title}"</p>
+                        <sub>Tap "+ Add Word" below to add a new word</sub>
+                    </div>
+                `;
+            } else {
+                pageWords.forEach((wordObj, idx) => {
+                    const rowNumber = startIndex + idx + 1;
+                    const rowElem = createRowElement(wordObj, rowNumber, activeCategory.id);
+                    vocabList.appendChild(rowElem);
+                });
+            }
+
+            pageStatus.textContent = `Page ${appState.currentPage} / ${totalPages}`;
+            prevPageBtn.disabled = appState.currentPage <= 1;
+            nextPageBtn.disabled = appState.currentPage >= totalPages;
+
+            renderDrawerCategories();
+            saveToLocalStorage();
+        }
+
+        function createRowElement(wordObj, rowNumber, categoryId) {
+            const rowElement = document.createElement('div');
+            rowElement.className = 'vocab-row';
+            rowElement.dataset.id = wordObj.id;
+
+            // Audio speed default is 0.5x
+            if (!wordObj.audioRate) {
+                wordObj.audioRate = 0.5;
+            }
+
+            rowElement.innerHTML = `
+                <div class="row-num">${rowNumber}</div>
+
+                <div class="english-col">
+                    <input type="text" 
+                           placeholder="English..." 
+                           value="${wordObj.english || ''}"
+                           class="english-input" />
+                </div>
+
+                <div class="bangla-col">
+                    <span class="bangla-text">${wordObj.bangla || '<span class="bangla-placeholder">অর্থ...</span>'}</span>
+                    <span class="spinner hidden"></span>
+                </div>
+
+                <div class="speaker-box-wrapper">
+                    <button type="button" class="speaker-box" title="Pronounce word (0.5x / 0.1x toggle)">
+                        <i class="fa-solid fa-volume-high"></i>
+                        <span class="speed-badge">${wordObj.audioRate === 0.1 ? '0.1x' : '0.5x'}</span>
+                    </button>
+                </div>
+
+                <button type="button" class="btn-delete" title="Delete word">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            `;
+
+            const englishInput = rowElement.querySelector('.english-input');
+            const banglaText = rowElement.querySelector('.bangla-text');
+            const spinner = rowElement.querySelector('.spinner');
+            const speakerBtn = rowElement.querySelector('.speaker-box');
+            const speedBadge = rowElement.querySelector('.speed-badge');
+            const deleteBtn = rowElement.querySelector('.btn-delete');
+
+            // Speaker speed toggle: 0.5x -> 0.1x -> 0.5x
+            speakerBtn.addEventListener('click', () => {
+                const text = englishInput.value;
+                if (!text.trim()) return;
+
+                const currentRate = wordObj.audioRate || 0.5;
+                speakEnglishText(text, currentRate);
+
+                const nextRate = currentRate === 0.5 ? 0.1 : 0.5;
+                wordObj.audioRate = nextRate;
+                speedBadge.textContent = `${nextRate}x`;
+
+                syncToCloud();
+            });
+
+            // Input & translation
+            englishInput.addEventListener('input', (e) => {
+                const query = e.target.value;
+                wordObj.english = query;
+
+                if (debounceTimers[wordObj.id]) {
+                    clearTimeout(debounceTimers[wordObj.id]);
+                }
+
+                if (!query.trim()) {
+                    wordObj.bangla = '';
+                    banglaText.innerHTML = '<span class="bangla-placeholder">অর্থ...</span>';
+                    spinner.classList.add('hidden');
+                    syncToCloud();
+                    return;
+                }
+
+                spinner.classList.remove('hidden');
+
+                debounceTimers[wordObj.id] = setTimeout(async () => {
+                    const translation = await translateText(query);
+                    wordObj.bangla = translation;
+                    banglaText.textContent = translation;
+                    spinner.classList.add('hidden');
+                    syncToCloud();
+                }, 350);
+            });
+
+            deleteBtn.addEventListener('click', () => {
+                openDeleteModal(wordObj.id, categoryId);
+            });
+
+            return rowElement;
+        }
+
+        function renderDrawerCategories() {
+            categoryList.innerHTML = '';
+            appState.categories.forEach(cat => {
+                const item = document.createElement('div');
+                item.className = `category-item ${cat.id === appState.activeCategoryId ? 'active' : ''}`;
+                
+                const count = (cat.words || []).length;
+
+                item.innerHTML = `
+                    <div class="cat-item-left">
+                        <i class="fa-solid fa-folder"></i>
+                        <span class="cat-item-name">${cat.title}</span>
+                    </div>
+                    <div class="cat-actions">
+                        <span class="cat-badge">${count}</span>
+                        <button type="button" class="btn-action-cat edit" title="Edit title name">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                        ${appState.categories.length > 1 ? `
+                        <button type="button" class="btn-action-cat del" title="Delete category">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>` : ''}
+                    </div>
+                `;
+
+                item.addEventListener('click', (e) => {
+                    if (e.target.closest('.btn-action-cat')) return;
+                    appState.activeCategoryId = cat.id;
+                    appState.currentPage = 1;
+                    drawerOverlay.classList.remove('active');
+                    renderUI();
+                });
+
+                const editBtn = item.querySelector('.btn-action-cat.edit');
+                if (editBtn) {
+                    editBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        openTitleModal(cat.id);
+                    });
+                }
+
+                const delBtn = item.querySelector('.btn-action-cat.del');
+                if (delBtn) {
+                    delBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        appState.categories = appState.categories.filter(c => c.id !== cat.id);
+                        if (appState.activeCategoryId === cat.id && appState.categories.length > 0) {
+                            appState.activeCategoryId = appState.categories[0].id;
+                        }
+                        renderUI();
+                        syncToCloud();
+                    });
+                }
+
+                categoryList.appendChild(item);
+            });
+        }
+
+        // Title banner edit
+        editActiveTitleBtn.addEventListener('click', () => {
+            const activeCat = getActiveCategory();
+            if (activeCat) {
+                openTitleModal(activeCat.id);
+            }
+        });
+
+        toggleEyeBtn.addEventListener('click', () => {
+            appState.hideMeaning = !appState.hideMeaning;
+            renderUI();
+        });
+
+        // FIX 2: Add word at the top of current active page without jumping to Page 1
+        addWordBtn.addEventListener('click', () => {
+            let activeCategory = getActiveCategory();
+            if (!activeCategory) {
+                const newCat = { id: 'cat-' + Date.now(), title: 'General Vocabulary', words: [] };
+                appState.categories.push(newCat);
+                appState.activeCategoryId = newCat.id;
+                activeCategory = newCat;
+            }
+
+            const newWord = {
+                id: 'w-' + Date.now() + '-' + Math.random().toString(36).substring(2, 5),
+                english: '',
+                bangla: '',
+                audioRate: 0.5
+            };
+
+            // Calculate current page insertion index
+            const insertIndex = (appState.currentPage - 1) * PAGE_SIZE;
+            
+            // Insert at the exact top position of current page
+            activeCategory.words.splice(insertIndex, 0, newWord);
+
+            renderUI();
+
+            // Focus top row input of current page
+            setTimeout(() => {
+                const inputs = vocabList.querySelectorAll('.english-input');
+                if (inputs.length > 0) {
+                    inputs[0].focus();
+                }
+            }, 50);
+
+            syncToCloud();
+        });
+
+        // Pagination
+        prevPageBtn.addEventListener('click', () => {
+            if (appState.currentPage > 1) {
+                appState.currentPage--;
+                renderUI();
+            }
+        });
+
+        nextPageBtn.addEventListener('click', () => {
+            const activeCategory = getActiveCategory();
+            if (activeCategory) {
+                const totalPages = Math.ceil((activeCategory.words || []).length / PAGE_SIZE);
+                if (appState.currentPage < totalPages) {
+                    appState.currentPage++;
+                    renderUI();
+                }
+            }
+        });
+
+        // Drawer
+        menuBtn.addEventListener('click', () => drawerOverlay.classList.add('active'));
+        closeDrawerBtn.addEventListener('click', () => drawerOverlay.classList.remove('active'));
+        drawerOverlay.addEventListener('click', (e) => {
+            if (e.target === drawerOverlay) drawerOverlay.classList.remove('active');
+        });
+
+        addTitleBtn.addEventListener('click', () => openTitleModal(null));
+
+        modalCancelBtn.addEventListener('click', () => {
+            titleModal.classList.remove('active');
+            editingCategoryId = null;
+        });
+
+        modalSubmitBtn.addEventListener('click', () => {
+            const titleText = modalTitleInput.value.trim();
+            if (!titleText) return;
+
+            if (editingCategoryId) {
+                const cat = appState.categories.find(c => c.id === editingCategoryId);
+                if (cat) {
+                    cat.title = titleText;
+                }
+            } else {
+                const newCat = {
+                    id: 'cat-' + Date.now(),
+                    title: titleText,
+                    words: []
+                };
+                appState.categories.push(newCat);
+                appState.activeCategoryId = newCat.id;
+                appState.currentPage = 1;
+            }
+
+            titleModal.classList.remove('active');
+            drawerOverlay.classList.remove('active');
+            editingCategoryId = null;
+
+            renderUI();
+            syncToCloud();
+        });
+
+        // Delete Modal Actions
+        deleteCancelBtn.addEventListener('click', closeDeleteModal);
+
+        deleteConfirmBtn.addEventListener('click', () => {
+            if (pendingDeleteWordId && pendingDeleteCategoryId) {
+                const cat = appState.categories.find(c => c.id === pendingDeleteCategoryId);
+                if (cat) {
+                    cat.words = cat.words.filter(w => w.id !== pendingDeleteWordId);
+                    renderUI();
+                    syncToCloud();
+                }
+            }
+            closeDeleteModal();
+        });
+
+        async function initApp() {
+            initTTSVoices();
+
+            const localData = loadFromLocalStorage();
+            if (localData && Array.isArray(localData.categories) && localData.categories.length > 0) {
+                appState = localData;
+            } else {
+                appState = {
+                    activeCategoryId: 'cat-default',
+                    categories: [
+                        { id: 'cat-default', title: 'General Vocabulary', words: [] }
+                    ],
+                    currentPage: 1,
+                    hideMeaning: false
+                };
+            }
+
+            renderUI();
+
+            if (typeof __firebase_config !== 'undefined') {
+                try {
+                    const firebaseConfig = JSON.parse(__firebase_config);
+                    const app = initializeApp(firebaseConfig);
+                    db = getFirestore(app);
+                    auth = getAuth(app);
+
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        const userCred = await signInWithCustomToken(auth, __initial_auth_token);
+                        currentUser = userCred.user;
+                    } else {
+                        const userCred = await signInAnonymously(auth);
+                        currentUser = userCred.user;
+                    }
+
+                    if (currentUser) {
+                        isFirestoreReady = true;
+                        const docRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'vocab_data', 'main');
+                        
+                        onSnapshot(docRef, (docSnap) => {
+                            if (docSnap.exists()) {
+                                const cloudData = docSnap.data().appState;
+                                if (cloudData && Array.isArray(cloudData.categories)) {
+                                    appState = cloudData;
+                                    renderUI();
+                                }
+                            }
+                        }, (err) => {
+                            console.warn('Firestore snapshot error:', err);
+                        });
+                    }
+                } catch (e) {
+                    console.warn('Firestore setup error:', e);
+                }
+            }
+        }
+
+        window.addEventListener('pagehide', saveToLocalStorage);
+        window.addEventListener('beforeunload', saveToLocalStorage);
+
+        window.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>      
